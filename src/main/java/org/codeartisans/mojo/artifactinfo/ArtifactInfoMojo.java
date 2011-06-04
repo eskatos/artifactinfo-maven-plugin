@@ -52,6 +52,7 @@ public class ArtifactInfoMojo
     private MavenProject mavenProject;
 
     @Override
+    @SuppressWarnings( "LocalVariableHidesMemberVariable" )
     public void execute()
             throws MojoExecutionException, MojoFailureException
     {
@@ -59,9 +60,7 @@ public class ArtifactInfoMojo
             getLog().info( "artifactinfo-maven-plugin execution is skipped" );
             return;
         }
-        @SuppressWarnings( "LocalVariableHidesMemberVariable" )
         String packageName = resolvePackageName();
-        @SuppressWarnings( "LocalVariableHidesMemberVariable" )
         String className = resolveClassName();
         try {
             String template = IOUtil.toString( getClass().getResourceAsStream( "ArtifactInfo.class.tpl" ), "UTF-8" );
@@ -84,8 +83,9 @@ public class ArtifactInfoMojo
                 output = output.replaceAll( "#inceptionYear#", mavenProject.getInceptionYear() );
             }
 
-            File target = new File( mavenProject.getBuild().getDirectory() );
-            File generatedSources = new File( new File( target, "generated-sources" ), "artifactinfo" );
+            File generatedSources = new File( new File( new File( mavenProject.getBuild().getDirectory() ), "generated-sources" ), "artifactinfo" );
+            mavenProject.addCompileSourceRoot( generatedSources.getAbsolutePath() );
+
             for ( String eachSubDir : packageName.split( "\\." ) ) {
                 generatedSources = new File( generatedSources, eachSubDir );
             }
