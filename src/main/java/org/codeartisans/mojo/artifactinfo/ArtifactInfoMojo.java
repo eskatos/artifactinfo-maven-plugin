@@ -21,6 +21,7 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.FileUtils;
 
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.StringUtils;
@@ -91,6 +92,9 @@ public class ArtifactInfoMojo
             }
             File javaFile = new File( generatedSources, className + ".java" );
 
+            if ( generatedSources.exists() ) {
+                FileUtils.deleteDirectory( generatedSources );
+            }
             if ( !generatedSources.mkdirs() ) {
                 throw new IOException( "Unable to create generated sources directory" );
             }
