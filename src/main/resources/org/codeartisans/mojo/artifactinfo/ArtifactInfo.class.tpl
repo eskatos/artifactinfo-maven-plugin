@@ -10,5 +10,6 @@ public interface #className#
     String NAME = "#name#";
     String URL = "#url#";
     String INCEPTION_YEAR = "#inceptionYear#";
+    long BUILD_TIMESTAMP = #buildTimestamp#L;
 
 }

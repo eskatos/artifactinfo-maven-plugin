@@ -16,6 +16,7 @@ package org.codeartisans.mojo.artifactinfo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Date;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -37,14 +38,17 @@ public class ArtifactInfoMojo
      * @parameter default-value="false"
      */
     private boolean skip;
+
     /**
      * @parameter
      */
     private String packageName;
+
     /**
      * @parameter
      */
     private String className;
+
     /**
      * @parameter expression="${project}"
      * @required
@@ -83,6 +87,7 @@ public class ArtifactInfoMojo
             if ( !StringUtils.isEmpty( mavenProject.getInceptionYear() ) ) {
                 output = output.replaceAll( "#inceptionYear#", mavenProject.getInceptionYear() );
             }
+            output = output.replaceAll( "#buildTimestamp#", System.currentTimeMillis() + "" );
 
             File generatedSources = new File( new File( new File( mavenProject.getBuild().getDirectory() ), "generated-sources" ), "artifactinfo" );
             mavenProject.addCompileSourceRoot( generatedSources.getAbsolutePath() );
