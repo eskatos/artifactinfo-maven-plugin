@@ -38,6 +38,12 @@
     </developer>
   </developers>
 
+    <contributors>
+        <contributor>
+            <name>Mirko Friedenhagen</name>
+            <url>http://illegalstateexception.blogspot.fr/</url>
+        </contributor>
+    </contributors>
     
   <dependencies>
     <dependency>
