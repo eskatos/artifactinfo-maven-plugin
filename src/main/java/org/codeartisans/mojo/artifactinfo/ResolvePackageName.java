@@ -37,9 +37,8 @@ class ResolvePackageName extends Resolver {
             validatesName(givenPackageName);
             return givenPackageName;
         }
-        StringBuilder sb = new StringBuilder();
-        String nonFiltered = groupId;
-        nonFiltered = specialTrim(nonFiltered);
+        final StringBuilder sb = new StringBuilder();
+        final String nonFiltered = specialTrim(groupId);
         for (int idx = 0; idx < nonFiltered.length(); idx++) {
             char current = nonFiltered.charAt(idx);
             if (validCharacters.indexOf((int) current) != -1) {
