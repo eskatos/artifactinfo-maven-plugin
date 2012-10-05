@@ -15,6 +15,7 @@
  */
 package org.codeartisans.mojo.artifactinfo;
 
+import java.util.Locale;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
@@ -22,7 +23,9 @@ import org.codehaus.plexus.util.StringUtils;
  * @author Mirko Friedenhagen
  */
 class ResolveClassName extends Resolver {
+    
     final String givenClassName;
+    
     final String artifactId;
 
     public ResolveClassName(final String givenClassName, final String artifactId) {
@@ -36,18 +39,17 @@ class ResolveClassName extends Resolver {
             validatesName(givenClassName);
             return givenClassName;
         }
-        StringBuilder sb = new StringBuilder();
-        String nonFiltered = artifactId;
-        nonFiltered = specialTrim(nonFiltered);
+        final StringBuilder sb = new StringBuilder();
+        final String nonFiltered = specialTrim(artifactId);
         String previous = new String(new char[]{nonFiltered.charAt(0)});
-        sb.append(previous.toUpperCase());
+        sb.append(previous.toUpperCase(Locale.ENGLISH));
         for (int idx = 1; idx < nonFiltered.length(); idx++) {
             char current = nonFiltered.charAt(idx);
             if (validCharacters.indexOf((int) current) != -1) {
                 if (validCharacters.contains(previous)) {
                     sb.append(current);
                 } else {
-                    sb.append(new String(new char[]{current}).toUpperCase());
+                    sb.append(new String(new char[]{current}).toUpperCase(Locale.ENGLISH));
                 }
             }
             previous = new String(new char[]{current});
