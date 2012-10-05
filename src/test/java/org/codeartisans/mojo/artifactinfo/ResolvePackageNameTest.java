@@ -55,14 +55,5 @@ public class ResolvePackageNameTest extends TestCase {
         String result = instance.resolve();
         assertEquals(expResult, result);
     }
-    
-    /**
-     * Test of resolve method, of class ResolvePackageName.
-     */
-    public void testResolveNoPackageGivenWithLeadingAndTrailingDot() {
-        ResolvePackageName instance = new ResolvePackageName(null, ".org.example.foo.");        
-        String expResult = "org.example.foo";
-        String result = instance.resolve();
-        assertEquals(expResult, result);
-    }
+
 }
