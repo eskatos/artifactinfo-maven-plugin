@@ -113,14 +113,24 @@ public class ArtifactInfoMojo
             throw new MojoExecutionException( "IOExsception during ArtifactInfo class generation", ex );
         }
     }
-
+    
+    /**
+     * Abstract Resolver class with helper functions for validation.
+     */
     static abstract class Resolver {
-        void validatesName( String name, String allowed )
+        
+        final String validCharacters;
+        
+        Resolver(final String validCharacters) {
+            this.validCharacters = validCharacters;            
+        }
+        
+        void validatesName( String name )
         {
             for ( int idx = 0; idx < name.length(); idx++ ) {
                 char current = name.charAt( idx );
-                if ( allowed.indexOf( ( int ) current ) == -1 ) {
-                    throw new IllegalArgumentException( "Given name [" + name + "] contains unallowed char [" + current + "], allowed are [" + allowed + ']' );
+                if ( validCharacters.indexOf( ( int ) current ) == -1 ) {
+                    throw new IllegalArgumentException( "Given name [" + name + "] contains unallowed char [" + current + "], allowed are [" + validCharacters + ']' );
                 }
             }
         }
@@ -145,11 +155,11 @@ public class ArtifactInfoMojo
     
     static class ResolvePackageName extends Resolver {
         
-        private static final String PACKAGENAME_VALID_CHARS = "abcdefghijklmnopqrstuvwxyz.";
         private final String givenPackageName;
         private final String groupId;
 
         public ResolvePackageName(final String givenPackageName, final String groupId) {
+            super("abcdefghijklmnopqrstuvwxyz.");
             this.givenPackageName = givenPackageName;
             this.groupId = groupId.toLowerCase(Locale.ENGLISH);
         }
@@ -157,7 +167,7 @@ public class ArtifactInfoMojo
         String resolve()
         {
             if ( !StringUtils.isEmpty( givenPackageName ) ) {
-                validatesName( givenPackageName, PACKAGENAME_VALID_CHARS );
+                validatesName( givenPackageName );
                 return givenPackageName;
             }
             StringBuilder sb = new StringBuilder();
@@ -165,7 +175,7 @@ public class ArtifactInfoMojo
             nonFiltered = specialTrim( nonFiltered );
             for ( int idx = 0; idx < nonFiltered.length(); idx++ ) {
                 char current = nonFiltered.charAt( idx );
-                if ( PACKAGENAME_VALID_CHARS.indexOf( ( int ) current ) != -1 ) {
+                if ( validCharacters.indexOf( ( int ) current ) != -1 ) {
                     sb.append( current );
                 }
             }
@@ -175,11 +185,11 @@ public class ArtifactInfoMojo
 
     static class ResolveClassName extends Resolver {
         
-        private static final String CLASSNAME_VALID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         private final String givenClassName;
         private final String artifactId;
 
         public ResolveClassName(final String givenClassName, final String artifactId) {
+            super("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
             this.givenClassName = givenClassName;
             this.artifactId = artifactId;
         }
@@ -187,7 +197,7 @@ public class ArtifactInfoMojo
         String resolve()
         {
             if ( !StringUtils.isEmpty( givenClassName ) ) {
-                validatesName( givenClassName, CLASSNAME_VALID_CHARS );
+                validatesName( givenClassName );
                 return givenClassName;
             }
             StringBuilder sb = new StringBuilder();
@@ -197,8 +207,8 @@ public class ArtifactInfoMojo
             sb.append( previous.toUpperCase() );
             for ( int idx = 1; idx < nonFiltered.length(); idx++ ) {
                 char current = nonFiltered.charAt( idx );
-                if ( CLASSNAME_VALID_CHARS.indexOf( ( int ) current ) != -1 ) {
-                    if ( CLASSNAME_VALID_CHARS.contains( previous ) ) {
+                if ( validCharacters.indexOf( ( int ) current ) != -1 ) {
+                    if ( validCharacters.contains( previous ) ) {
                         sb.append( current );
                     } else {
                         sb.append( new String( new char[]{ current } ).toUpperCase() );
