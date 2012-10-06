@@ -14,7 +14,9 @@
 
   <packaging>maven-plugin</packaging>
   <name>${project.artifactId}</name>
-
+  <url>https://github.com/eskatos/artifactinfo-maven-plugin</url>
+  <description>Generate source files that contains maven artifact informations.</description>
+  
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -24,12 +26,19 @@
     </license>
   </licenses>
 
+  <inceptionYear>2011</inceptionYear>
+  
   <scm>
-    <url>scm:git:git@github.com:eskatos/artifactinfo-maven-plugin.git</url>
-    <connection>scm:git:git@github.com:eskatos/artifactinfo-maven-plugin.git</connection>
+    <url>https://github.com/eskatos/artifactinfo-maven-plugin.git</url>
+    <connection>scm:git:github.com:eskatos/artifactinfo-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:eskatos/artifactinfo-maven-plugin.git</developerConnection>
   </scm>
-
+  
+  <issueManagement>
+    <system>GitHub</system>
+    <url>https://github.com/eskatos/artifactinfo-maven-plugin/issues</url>
+  </issueManagement>
+  
   <developers>
     <developer>
       <id>paul@nosphere.org</id>
