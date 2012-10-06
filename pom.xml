@@ -26,7 +26,7 @@
     </license>
   </licenses>
 
-  <inceptionYear>2012</inceptionYear>
+  <inceptionYear>2011</inceptionYear>
   
   <scm>
     <url>https://github.com/eskatos/artifactinfo-maven-plugin.git</url>
@@ -34,10 +34,10 @@
     <developerConnection>scm:git:git@github.com:eskatos/artifactinfo-maven-plugin.git</developerConnection>
   </scm>
   
-  <ciManagement>
+  <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/eskatos/artifactinfo-maven-plugin/issues</url>
-  </ciManagement>
+  </issueManagement>
   
   <developers>
     <developer>
