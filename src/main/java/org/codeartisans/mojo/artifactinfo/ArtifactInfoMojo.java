@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.Locale;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -42,12 +43,12 @@ public class ArtifactInfoMojo
     /**
      * @parameter
      */
-    private String packageName;
+    private String packageName = "";
 
     /**
      * @parameter
      */
-    private String className;
+    private String className = "";
 
     /**
      * @parameter expression="${project}"
@@ -65,8 +66,8 @@ public class ArtifactInfoMojo
             getLog().info( "artifactinfo-maven-plugin execution is skipped" );
             return;
         }
-        String packageName = resolvePackageName();
-        String className = resolveClassName();
+        String packageName = new ResolvePackageName(this.packageName, mavenProject.getGroupId()).resolve();
+        String className = new ResolveClassName(this.className, mavenProject.getArtifactId()).resolve();
         try {
             String template = IOUtil.toString( getClass().getResourceAsStream( "ArtifactInfo.class.tpl" ), "UTF-8" );
 
@@ -112,78 +113,4 @@ public class ArtifactInfoMojo
             throw new MojoExecutionException( "IOExsception during ArtifactInfo class generation", ex );
         }
     }
-
-    private static final String PACKAGENAME_VALID_CHARS = "abcdefghijklmnopqrstuvwxyz.";
-
-    private String resolvePackageName()
-    {
-        if ( !StringUtils.isEmpty( packageName ) ) {
-            validatesName( packageName, PACKAGENAME_VALID_CHARS );
-            return packageName;
-        }
-        StringBuilder sb = new StringBuilder();
-        String nonFiltered = mavenProject.getGroupId().toLowerCase();
-        nonFiltered = specialTrim( nonFiltered );
-        for ( int idx = 0; idx < nonFiltered.length(); idx++ ) {
-            char current = nonFiltered.charAt( idx );
-            if ( PACKAGENAME_VALID_CHARS.indexOf( ( int ) current ) != -1 ) {
-                sb.append( current );
-            }
-        }
-        return sb.toString();
-    }
-
-    private static final String CLASSNAME_VALID_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-    private String resolveClassName()
-    {
-        if ( !StringUtils.isEmpty( className ) ) {
-            validatesName( className, CLASSNAME_VALID_CHARS );
-            return className;
-        }
-        StringBuilder sb = new StringBuilder();
-        String nonFiltered = mavenProject.getArtifactId();
-        nonFiltered = specialTrim( nonFiltered );
-        String previous = new String( new char[]{ nonFiltered.charAt( 0 ) } );
-        sb.append( previous.toUpperCase() );
-        for ( int idx = 1; idx < nonFiltered.length(); idx++ ) {
-            char current = nonFiltered.charAt( idx );
-            if ( CLASSNAME_VALID_CHARS.indexOf( ( int ) current ) != -1 ) {
-                if ( CLASSNAME_VALID_CHARS.contains( previous ) ) {
-                    sb.append( current );
-                } else {
-                    sb.append( new String( new char[]{ current } ).toUpperCase() );
-                }
-            }
-            previous = new String( new char[]{ current } );
-        }
-        sb.append( "_ArtifactInfo" );
-        return sb.toString();
-    }
-
-    private void validatesName( String name, String allowed )
-    {
-        for ( int idx = 0; idx < name.length(); idx++ ) {
-            char current = name.charAt( idx );
-            if ( allowed.indexOf( ( int ) current ) == -1 ) {
-                throw new IllegalArgumentException( "Given name [" + name + "] contains unallowed char [" + current + "], allowed are [" + allowed + ']' );
-            }
-        }
-    }
-
-    /**
-     * Trim and remove trailing dots.
-     */
-    private String specialTrim( String str )
-    {
-        str = str.trim();
-        if ( str.startsWith( "." ) ) {
-            str = str.substring( 1 );
-        }
-        if ( str.endsWith( "." ) ) {
-            str = str.substring( 0, str.length() - 1 );
-        }
-        return str;
-    }
-
 }
