@@ -16,8 +16,6 @@ package org.codeartisans.mojo.artifactinfo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.Locale;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,9 +30,8 @@ import org.codehaus.plexus.util.StringUtils;
  * @goal artifactinfo
  */
 public class ArtifactInfoMojo
-        extends AbstractMojo
+    extends AbstractMojo
 {
-
     /**
      * @parameter default-value="false"
      */
@@ -60,15 +57,17 @@ public class ArtifactInfoMojo
     @Override
     @SuppressWarnings( "LocalVariableHidesMemberVariable" )
     public void execute()
-            throws MojoExecutionException, MojoFailureException
+        throws MojoExecutionException, MojoFailureException
     {
-        if ( skip ) {
+        if( skip )
+        {
             getLog().info( "artifactinfo-maven-plugin execution is skipped" );
             return;
         }
-        String packageName = new ResolvePackageName(this.packageName, mavenProject.getGroupId()).resolve();
-        String className = new ResolveClassName(this.className, mavenProject.getArtifactId()).resolve();
-        try {
+        String packageName = new ResolvePackageName( this.packageName, mavenProject.getGroupId() ).resolve();
+        String className = new ResolveClassName( this.className, mavenProject.getArtifactId() ).resolve();
+        try
+        {
             String template = IOUtil.toString( getClass().getResourceAsStream( "ArtifactInfo.class.tpl" ), "UTF-8" );
 
             String output = template.replaceAll( "#packageName#", packageName );
@@ -76,16 +75,20 @@ public class ArtifactInfoMojo
             output = output.replaceAll( "#groupId#", mavenProject.getGroupId() );
             output = output.replaceAll( "#artifactId#", mavenProject.getArtifactId() );
             output = output.replaceAll( "#version#", mavenProject.getVersion() );
-            if ( !StringUtils.isEmpty( mavenProject.getDescription() ) ) {
+            if( !StringUtils.isEmpty( mavenProject.getDescription() ) )
+            {
                 output = output.replaceAll( "#description#", mavenProject.getDescription() );
             }
-            if ( !StringUtils.isEmpty( mavenProject.getName() ) ) {
+            if( !StringUtils.isEmpty( mavenProject.getName() ) )
+            {
                 output = output.replaceAll( "#name#", mavenProject.getName() );
             }
-            if ( !StringUtils.isEmpty( mavenProject.getUrl() ) ) {
+            if( !StringUtils.isEmpty( mavenProject.getUrl() ) )
+            {
                 output = output.replaceAll( "#url#", mavenProject.getUrl() );
             }
-            if ( !StringUtils.isEmpty( mavenProject.getInceptionYear() ) ) {
+            if( !StringUtils.isEmpty( mavenProject.getInceptionYear() ) )
+            {
                 output = output.replaceAll( "#inceptionYear#", mavenProject.getInceptionYear() );
             }
             output = output.replaceAll( "#buildTimestamp#", System.currentTimeMillis() + "" );
@@ -93,24 +96,29 @@ public class ArtifactInfoMojo
             File generatedSources = new File( new File( new File( mavenProject.getBuild().getDirectory() ), "generated-sources" ), "artifactinfo" );
             mavenProject.addCompileSourceRoot( generatedSources.getAbsolutePath() );
 
-            for ( String eachSubDir : packageName.split( "\\." ) ) {
+            for( String eachSubDir : packageName.split( "\\." ) )
+            {
                 generatedSources = new File( generatedSources, eachSubDir );
             }
             File javaFile = new File( generatedSources, className + ".java" );
 
-            if ( generatedSources.exists() ) {
+            if( generatedSources.exists() )
+            {
                 FileUtils.deleteDirectory( generatedSources );
             }
-            if ( !generatedSources.mkdirs() ) {
+            if( !generatedSources.mkdirs() )
+            {
                 throw new IOException( "Unable to create generated sources directory" );
             }
             IOUtil.copy( output, new FileOutputStream( javaFile ) );
 
             getLog().info( "Generated " + packageName + "." + className + " java source code in " + javaFile.getAbsolutePath() );
 
-        } catch ( IOException ex ) {
+        }
+        catch( IOException ex )
+        {
             getLog().error( ex );
-            throw new MojoExecutionException( "IOExsception during ArtifactInfo class generation", ex );
+            throw new MojoExecutionException( "IOException during ArtifactInfo class generation", ex );
         }
     }
 }
