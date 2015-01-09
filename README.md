@@ -1,6 +1,8 @@
 artifactinfo-maven-plugin
 =========================
 
+[![Build Status](https://travis-ci.org/eskatos/artifactinfo-maven-plugin.svg)](https://travis-ci.org/eskatos/artifactinfo-maven-plugin)
+
 artifactinfo-maven-plugin generate java code with constants containing maven project metadata for use in you programs.
 
 The project is hosted in maven central.
